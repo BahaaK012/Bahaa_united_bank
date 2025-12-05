@@ -22,6 +22,15 @@ public boolean withdraw(double amount) {
 		return true;
 	}
 	return false;
+}
+
+	public boolean transfer(Account toAccount, double amount) {
+		if (withdraw(amount)) {
+			toAccount.deposit(amount);
+			return true;
+		}
+		return false;
+	}
 	
 	
 
