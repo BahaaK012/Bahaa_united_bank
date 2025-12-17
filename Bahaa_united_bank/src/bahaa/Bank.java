@@ -60,5 +60,23 @@ public void printTransactionsOf(int index) {
         acc.printTransactions();
     }
 }
+
+public Account[] loginUser(String username, String password) {
+    Account[] result = new Account[2];
+    int count = 0;
+
+    for (int i = 0; i < numAccounts; i++) {
+        if (accounts[i].getUsername().equals(username)
+            && accounts[i].checkPassword(password)) {
+            result[count++] = accounts[i];
+        }
+    }
+
+    if (count == 2) {
+        return result;
+    }
+    return null;
 }
+}
+
 
