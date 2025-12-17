@@ -1,12 +1,29 @@
 package bahaa;
-
+import java.io.FileWriter;
+import java.io.IOException;
 public class Account implements Transferable {
+	private String username;
+	private String password;
+	private int accountId;
     private double balance;
     private Transaction[] transactions = new Transaction[10000];// I know I should use a real arraylist I KNOW
     private int numTransactions = 0;
     
-    public Account(double initialBalance) {
+    public Account(int accountId, String username, String password, double initialBalance) {
+    	this.accountId = accountId;
+        this.username = username;
+        this.password = password;
         this.balance = initialBalance;
+    }
+    public int getAcoountId() {
+    	   return accountId;
+    }
+    public String getUsername() {
+        return username;
+    }
+
+    public boolean checkPassword(String pass) {
+        return password.equals(pass);
     }
 
     public double checkBalance() {
@@ -37,13 +54,15 @@ public class Account implements Transferable {
         return false;
     }
 
-	private void addTransaction(Transaction transaction) {
-		if (numTransactions < transactions.length) {
-			transactions[numTransactions] = transaction;
-			numTransactions++; }
+    private void addTransaction(Transaction transaction) {
+        if (numTransactions < transactions.length) {
+            transactions[numTransactions++] = transaction;
+            saveTransactionToFile(transaction);
+        }
+    }
 		
 	
-	}
+	
 	public void printTransactions() {
 		for (int i = 0; i < numTransactions; i++) {
             System.out.println(transactions[i].getType() + ": " + transactions[i].getAmount());
@@ -51,6 +70,16 @@ public class Account implements Transferable {
     
     
 }
+	private void saveTransactionToFile(Transaction t) {
+	    try {
+	        FileWriter fw = new FileWriter("account_" + accountId + ".txt", true);
+	        fw.write(t.getType() + " : " + t.getAmount() + "\n");
+	        fw.close();
+	    } catch (IOException e) {
+	        System.out.println("Error");
+	    }
+	}
+
 
 	
 

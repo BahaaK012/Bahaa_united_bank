@@ -2,9 +2,10 @@ package bahaa;
 
 public class CheckingAccount extends Account {
 
-    public CheckingAccount(double initialBalance) {
-        super(initialBalance); 
-    }
+	public CheckingAccount(int accountId, String username, String password, double initialBalance) {
+	    super(accountId, username, password, initialBalance);
+	}
+
 
     @Override
     // creating a creadit limit hmm lets say 50

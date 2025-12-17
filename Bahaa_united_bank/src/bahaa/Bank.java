@@ -53,4 +53,12 @@ public void transferBetween(int Index, int toIndex, double amount) {
     }
 }
 
+
+public void printTransactionsOf(int index) {
+    Account acc = getAccount(index);
+    if (acc != null) {
+        acc.printTransactions();
+    }
 }
+}
+
