@@ -1,1 +1,14 @@
 deposit : 2.0
+deposit : 32.0
+deposit : 2.0
+deposit : 3.0
+withdraw : 20.0
+deposit : 20.0
+transfer to an account : 20.0
+withdraw : 20.0
+deposit : 20.0
+transfer to an account : 20.0
+withdraw : 23.0
+deposit : 23.0
+transfer to an account : 23.0
+withdraw : 23.0

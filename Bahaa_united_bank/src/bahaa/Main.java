@@ -8,9 +8,9 @@ public class Main {
 
         Bank bank = new Bank();
 
-        // create ONE user with TWO accounts
-        bank.addAccount(new SavingsAccount(1, "bahaa", "1234", 5000));
-        bank.addAccount(new CheckingAccount(1, "bahaa", "1234", 100));
+        bank.loadAccountsFromFile();
+        bank.loadUsersFromFile();
+
 
         Scanner sc = new Scanner(System.in);
 

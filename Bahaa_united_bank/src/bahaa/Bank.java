@@ -1,4 +1,6 @@
 package bahaa;
+import java.io.*;
+import java.util.*;
 
 public class Bank {
     private Account[] accounts = new Account[999999]; 
@@ -77,6 +79,62 @@ public Account[] loginUser(String username, String password) {
     }
     return null;
 }
+public void loadAccountsFromFile() {
+
+    try {
+        BufferedReader br = new BufferedReader(new FileReader("accounts.txt"));
+        String line;
+
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+
+            int userId = Integer.parseInt(parts[0]);
+            String type = parts[1];
+            double balance = Double.parseDouble(parts[2]);
+
+            if (type.equals("SAVINGS")) {
+                addAccount(new SavingsAccount(userId, "", "", balance));
+            } else if (type.equals("CHECKING")) {
+                addAccount(new CheckingAccount(userId, "", "", balance));
+            }
+        }
+
+        br.close();
+
+    } catch (Exception e) {
+        System.out.println("Error loading accounts");
+    }
+}
+
+public void loadUsersFromFile() {
+
+    try {
+        BufferedReader br = new BufferedReader(new FileReader("users.txt"));
+        String line;
+
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+
+            int userId = Integer.parseInt(parts[0]);
+            String username = parts[1];
+            String password = parts[2];
+
+            // attach login info to accounts
+            for (int i = 0; i < numAccounts; i++) {
+                if (accounts[i].getAcoountId() == userId) {
+                    accounts[i].setUsername(username);
+                    accounts[i].setPassword(password);
+                }
+            }
+        }
+
+        br.close();
+
+    } catch (Exception e) {
+        System.out.println("Error loading users");
+    }
+}
+
 }
 
 

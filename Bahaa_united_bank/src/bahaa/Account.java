@@ -29,6 +29,13 @@ public class Account implements Transferable {
     public double checkBalance() {
         return balance;
     }
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public void deposit(double amount) {
         balance += amount;
@@ -78,12 +85,13 @@ public class Account implements Transferable {
 	    } catch (IOException e) {
 	        System.out.println("Error");
 	    }
-	}
-
+	    
+	       
 
 	
 
 
+}
 
 
 
