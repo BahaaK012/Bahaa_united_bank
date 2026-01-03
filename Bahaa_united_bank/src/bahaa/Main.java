@@ -45,42 +45,41 @@ System.out.println("1 - Deposit");
 System.out.println("2 - Withdraw");
 System.out.println("3 - Transfer");
 System.out.println("4 - View Transactions");
+System.out.println("5 - View Balance");
 
 int choice1 = sc.nextInt();
 
 switch (choice1) {
 
     case 1:
-        System.out.print("Enter amount to deposit: ");
-        double d = sc.nextDouble();
-        currentAccount.deposit(d);
-        System.out.println("Deposit successful");
+        System.out.print("Amount: ");
+        currentAccount.deposit(sc.nextDouble());
         break;
 
     case 2:
-        System.out.print("Enter amount to withdraw: ");
-        double w = sc.nextDouble();
-        if (currentAccount.withdraw(w))
-            System.out.println("Withdraw successful");
-        else
-            System.out.println("Withdraw failed");
+        System.out.print("Amount: ");
+        currentAccount.withdraw(sc.nextDouble());
         break;
 
     case 3:
-        System.out.print("Transfer to (0 or 1): ");
+        System.out.print("Type account number(0,1): ");
         int to = sc.nextInt();
-        System.out.print("Enter amount: ");
-        double t = sc.nextDouble();
-        currentAccount.transfer(userAccounts[to], t);
+        System.out.print("Amount: ");
+        currentAccount.transfer(bank.getAccount(to), sc.nextDouble());
         break;
 
     case 4:
         currentAccount.printTransactions();
         break;
 
+    case 5:
+        System.out.println("Current balance: " + currentAccount.checkBalance());
+        break;
+
     default:
         System.out.println("Invalid choice");
 }
+
 
 System.out.println("Current balance: " + currentAccount.checkBalance());
 }

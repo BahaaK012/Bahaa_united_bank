@@ -1,23 +1,27 @@
 package bahaa;
+
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Scanner;
+
 public class Account implements Transferable {
-	private String username;
-	private String password;
-	private int accountId;
-    private double balance;
-    private Transaction[] transactions = new Transaction[10000];// I know I should use a real arraylist I KNOW
-    private int numTransactions = 0;
-    
-    public Account(int accountId, String username, String password, double initialBalance) {
-    	this.accountId = accountId;
+
+    private int accountId;
+    private String username;
+    private String password;
+
+    public Account(int accountId, String username, String password) {
+        this.accountId = accountId;
         this.username = username;
         this.password = password;
-        this.balance = initialBalance;
     }
-    public int getAcoountId() {
-    	   return accountId;
+
+    // ✅ FIXED name
+    public int getAccountId() {
+        return accountId;
     }
+
     public String getUsername() {
         return username;
     }
@@ -26,110 +30,89 @@ public class Account implements Transferable {
         return password.equals(pass);
     }
 
-    public double checkBalance() {
-        return balance;
-    }
+    // ✅ REQUIRED by Bank.loadUsersFromFile
     public void setUsername(String username) {
         this.username = username;
     }
 
+    // ✅ REQUIRED by Bank.loadUsersFromFile
     public void setPassword(String password) {
         this.password = password;
     }
 
+    // ✅ balance calculated from file
+    public double checkBalance() {
+        double balance = 0;
+
+        try (Scanner sc = new Scanner(new File("transactions.txt"))) {
+            while (sc.hasNextLine()) {
+                String[] parts = sc.nextLine().split(",");
+
+                int id = Integer.parseInt(parts[0]);
+                String type = parts[1];
+                double amount = Double.parseDouble(parts[2]);
+
+                if (id == accountId) {
+                    if (type.equals("DEPOSIT") || type.equals("TRANSFER_IN")) {
+                        balance += amount;
+                    } else if (type.equals("WITHDRAW") || type.equals("TRANSFER_OUT")) {
+                        balance -= amount;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // file may not exist yet
+        }
+
+        return balance;
+    }
+
     public void deposit(double amount) {
-        balance += amount;
-        addTransaction(new Transaction("deposit", amount));
+        saveTransaction("DEPOSIT", amount);
     }
 
     public boolean withdraw(double amount) {
-        if(amount <= balance) {
-            balance -= amount;
-            addTransaction(new Transaction("withdraw", amount));
+        if (checkBalance() >= amount) {
+            saveTransaction("WITHDRAW", amount);
             return true;
         }
+        System.out.println("Insufficient balance");
         return false;
     }
 
     @Override
     public boolean transfer(Account toAccount, double amount) {
         if (withdraw(amount)) {
-            toAccount.deposit(amount);
-            addTransaction(new Transaction("transfer to an account", amount));
+            toAccount.saveTransaction("TRANSFER_IN", amount);
+            saveTransaction("TRANSFER_OUT", amount);
             return true;
         }
         return false;
     }
 
-    private void addTransaction(Transaction transaction) {
-        if (numTransactions < transactions.length) {
-            transactions[numTransactions++] = transaction;
-            saveTransactionToFile(transaction);
+    private void saveTransaction(String type, double amount) {
+        try (FileWriter fw = new FileWriter("transactions.txt", true)) {
+            fw.write(accountId + "," + type + "," + amount + "\n");
+        } catch (IOException e) {
+            System.out.println("Error writing transaction");
         }
     }
-		
-	
-	
-	public void printTransactions() {
-		for (int i = 0; i < numTransactions; i++) {
-            System.out.println(transactions[i].getType() + ": " + transactions[i].getAmount());
-		}
-    
-    
-}
-	private void saveTransactionToFile(Transaction t) {
-	    try {
-	        FileWriter fw = new FileWriter("account_" + accountId + ".txt", true);
-	        fw.write(t.getType() + " : " + t.getAmount() + "\n");
-	        fw.close();
-	    } catch (IOException e) {
-	        System.out.println("Error");
-	    }
-	    
-	       
+    public void printTransactions() {
+        try (Scanner sc = new Scanner(new File("transactions.txt"))) {
+            while (sc.hasNextLine()) {
+                String[] parts = sc.nextLine().split(",");
 
-	
+                int id = Integer.parseInt(parts[0]);
+                String type = parts[1];
+                double amount = Double.parseDouble(parts[2]);
 
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                if (id == accountId) {
+                    System.out.println(type + " : " + amount);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("No transactions found");
+        }
+    }
 
 }

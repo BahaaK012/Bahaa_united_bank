@@ -1,8 +1,11 @@
 package bahaa;
+
 public class SavingsAccount extends Account {
-public SavingsAccount(int accountId, String username, String password, double initialBalance) {
-    super(accountId, username, password, initialBalance);
-}
+
+    public SavingsAccount(int accountId, String username, String password) {
+        super(accountId, username, password);
+    }
+
 
 
 	@Override 
@@ -15,5 +18,5 @@ public SavingsAccount(int accountId, String username, String password, double in
 		return super.withdraw(amount);
 	}
 
-
+ 
 }

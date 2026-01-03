@@ -93,9 +93,9 @@ public void loadAccountsFromFile() {
             double balance = Double.parseDouble(parts[2]);
 
             if (type.equals("SAVINGS")) {
-                addAccount(new SavingsAccount(userId, "", "", balance));
+            	addAccount(new SavingsAccount(userId, "", ""));
             } else if (type.equals("CHECKING")) {
-                addAccount(new CheckingAccount(userId, "", "", balance));
+            	addAccount(new CheckingAccount(userId, "", ""));
             }
         }
 
@@ -119,9 +119,9 @@ public void loadUsersFromFile() {
             String username = parts[1];
             String password = parts[2];
 
-            // attach login info to accounts
+            // attach login info to accounts each have id id will tell which is which
             for (int i = 0; i < numAccounts; i++) {
-                if (accounts[i].getAcoountId() == userId) {
+                if (accounts[i].getAccountId() == userId) {
                     accounts[i].setUsername(username);
                     accounts[i].setPassword(password);
                 }
@@ -133,7 +133,7 @@ public void loadUsersFromFile() {
     } catch (Exception e) {
         System.out.println("Error loading users");
     }
-}
+} 
 
 }
 
