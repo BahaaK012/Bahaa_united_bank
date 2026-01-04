@@ -8,7 +8,7 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         Bank bank = new Bank();
 
-        // Load all data from files
+      
         bank.loadAccountsFromFile();
         bank.loadUsersFromFile();
         bank.loadEmployeesFromFile();
@@ -21,7 +21,7 @@ public class Main {
         sc.nextLine(); // Clear buffer
 
         if (userType == 2) {
-            // EMPLOYEE FLOW
+         
             System.out.print("Employee Username: ");
             String empUser = sc.nextLine();
             System.out.print("Employee Password: ");
@@ -35,7 +35,7 @@ public class Main {
             }
 
         } else {
-            // USER FLOW
+        
             System.out.print("Username: ");
             String u = sc.nextLine();
             System.out.print("Password: ");
@@ -63,7 +63,7 @@ public class Main {
 
                 Account current = accs[accChoice];
                 System.out.println("\nWorking with: " + (accChoice == 0 ? "Savings" : "Checking"));
-                System.out.println("1. Deposit\n2. Withdraw\n3. Transfer\n4. Transactions\n5. Balance\n6. Apply for Loan\n7. Back");
+                System.out.println("1. Deposit\n2. Withdraw\n3. Transfer\n4. Transactions\n5. Balance\n6. Apply for Loan\n7. Check Loan Status\n8. Back");
                 int op = sc.nextInt();
 
                 switch (op) {
@@ -90,13 +90,20 @@ public class Main {
                     case 5:
                         System.out.println("Current balance: " + current.checkBalance());
                         break;
-                    case 6:
-                        System.out.print("Enter loan amount requested: ");
-                        double loanAmt = sc.nextDouble();
-                        bank.applyForLoan(current.getUserId(), loanAmt);
-                        break;
-                    case 7:
-                        break;
+                     
+                        case 6:
+                            System.out.print("Enter amount: ");
+                            double lAmt = sc.nextDouble();
+                            sc.nextLine(); 
+                            System.out.print("Reason: ");
+                            String res = sc.nextLine();
+                            bank.applyForLoan(current.getUserId(), lAmt, res);
+                            break;
+                        case 7:
+                            bank.checkLoanStatus(current.getUserId());
+                            break;
+                        case 8:
+                            break;
                     default:
                         System.out.println("Invalid choice");
                 }
