@@ -42,34 +42,47 @@ public abstract class Account implements Transferable {
         this.password = password;
     }
 
-    // balance calculated ONLY from file
+   
     public double checkBalance() {
         double balance = 0;
+        File file = new File("transactions.txt");
+        if (!file.exists()) return 0;
 
-        try (Scanner sc = new Scanner(new File("transactions.txt"))) {
+        try (Scanner sc = new Scanner(file)) {
             while (sc.hasNextLine()) {
-                String[] p = sc.nextLine().split(",");
+                String line = sc.nextLine().trim();
+                if (line.isEmpty()) continue; // Skip empty lines
 
-                int id = Integer.parseInt(p[0]);
-                String type = p[1];
-                double amount = Double.parseDouble(p[2]);
+                String[] p = line.split(",");
+                if (p.length < 3) continue; // Skip malformed lines
 
-                if (id == accountId) {
+                int id = Integer.parseInt(p[0].trim());
+                String type = p[1].trim();
+                double amount = Double.parseDouble(p[2].trim());
+
+                if (id == this.accountId) {
                     if (type.equals("DEPOSIT") || type.equals("TRANSFER_IN"))
                         balance += amount;
                     else
                         balance -= amount;
                 }
             }
-        } catch (Exception e) {}
-
+        } catch (Exception e) {
+            // Log error so you know if parsing fails
+            System.out.println("Error reading transactions: " + e.getMessage());
+        }
         return balance;
     }
 
-    public void deposit(double amount) {
-        saveTransaction("DEPOSIT", amount);
+    public boolean deposit(double amount) {
+        if (amount > 0) {
+            saveTransaction("DEPOSIT", amount);
+            return true; // Successful
+        } else {
+            System.out.println("Error DONT PUT - BEFORE YOU TYPE THE AMOUNT!.");
+            return false; // Failed
+        }
     }
-
     public boolean withdraw(double amount) {
         if (checkBalance() >= amount) {
             saveTransaction("WITHDRAW", amount);
@@ -79,7 +92,7 @@ public abstract class Account implements Transferable {
         return false;
     }
 
-    // ✅ FIXED TRANSFER (NO DOUBLE DEDUCTION)
+    
     @Override
     public boolean transfer(Account to, double amount) {
         if (checkBalance() >= amount) {

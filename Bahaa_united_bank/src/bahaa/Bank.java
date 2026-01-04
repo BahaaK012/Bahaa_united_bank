@@ -17,14 +17,12 @@ public class Bank {
         return null;
     }
 
-    // =========================
-    // LOGIN (FIXED)
-    // =========================
+ 
     public Account[] loginUser(String username, String password) {
 
         int userId = -1;
 
-        // 1️⃣ find userId using username/password
+    
         for (int i = 0; i < numAccounts; i++) {
             if (accounts[i].getUsername() != null &&
                 accounts[i].getUsername().equals(username) &&
@@ -38,7 +36,6 @@ public class Bank {
         if (userId == -1)
             return null;
 
-        // 2️⃣ collect BOTH accounts for that userId
         Account[] result = new Account[2];
         int count = 0;
 
@@ -54,9 +51,7 @@ public class Bank {
         return null;
     }
 
-    // =========================
-    // LOAD ACCOUNTS
-    // =========================
+ 
     public void loadAccountsFromFile() {
         try (BufferedReader br = new BufferedReader(new FileReader("accounts.txt"))) {
             String line;
@@ -80,9 +75,7 @@ public class Bank {
         }
     }
 
-    // =========================
-    // LOAD USERS
-    // =========================
+  
     public void loadUsersFromFile() {
         try (BufferedReader br = new BufferedReader(new FileReader("users.txt"))) {
             String line;
@@ -92,7 +85,7 @@ public class Bank {
                 String username = p[1];
                 String password = p[2];
 
-                // Assign these credentials to EVERY account that has this userId
+           
                 for (int i = 0; i < numAccounts; i++) {
                     if (accounts[i].getUserId() == userIdFromFile) {
                         accounts[i].setUsername(username);

@@ -37,17 +37,25 @@ public class Main {
         case 1:
             System.out.print("Enter amount to deposit: ");
             double d = sc.nextDouble();
-            current.deposit(d);
-            System.out.println("Deposit successful");
+            
+            // This calls the boolean method in Account.java
+            if (current.deposit(d)) {
+                System.out.println("Deposit successful");
+                System.out.println("Current balance: " + current.checkBalance());
+            } else {
+           
+                System.out.println("Deposit failed");
+            }
             break;
-
         case 2:
             System.out.print("Enter amount to withdraw: ");
             double w = sc.nextDouble();
             if (current.withdraw(w)) {
                 System.out.println("Withdrawal successful");
+                System.out.println("Current balance: " + current.checkBalance());
             } else {
                 System.out.println("Withdrawal failed");
+           
             }
             break;
 
@@ -60,6 +68,7 @@ public class Main {
             // Check the return value of the transfer method
             if (current.transfer(accs[t], a)) {
                 System.out.println("Transfer is successful");
+                System.out.println("Current balance: " + current.checkBalance());
             } else {
                 // No need for "Insufficient balance" here, 
                 // because the Account class already prints it.
@@ -69,6 +78,7 @@ public class Main {
 
         case 4:
             current.printTransactions();
+            System.out.println("Current balance: " + current.checkBalance());
             break;
 
         case 5:
