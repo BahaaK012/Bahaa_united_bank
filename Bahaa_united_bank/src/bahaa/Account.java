@@ -51,10 +51,10 @@ public abstract class Account implements Transferable {
         try (Scanner sc = new Scanner(file)) {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine().trim();
-                if (line.isEmpty()) continue; // Skip empty lines
+                if (line.isEmpty()) continue; 
 
                 String[] p = line.split(",");
-                if (p.length < 3) continue; // Skip malformed lines
+                if (p.length < 3) continue; 
 
                 int id = Integer.parseInt(p[0].trim());
                 String type = p[1].trim();
@@ -68,7 +68,7 @@ public abstract class Account implements Transferable {
                 }
             }
         } catch (Exception e) {
-            // Log error so you know if parsing fails
+          
             System.out.println("Error reading transactions: " + e.getMessage());
         }
         return balance;
@@ -77,10 +77,10 @@ public abstract class Account implements Transferable {
     public boolean deposit(double amount) {
         if (amount > 0) {
             saveTransaction("DEPOSIT", amount);
-            return true; // Successful
+            return true; 
         } else {
             System.out.println("Error DONT PUT - BEFORE YOU TYPE THE AMOUNT!.");
-            return false; // Failed
+            return false; 
         }
     }
     public boolean withdraw(double amount) {

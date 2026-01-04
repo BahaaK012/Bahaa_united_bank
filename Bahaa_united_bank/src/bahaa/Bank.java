@@ -15,9 +15,7 @@ public class Bank {
         accounts[numAccounts++] = acc;
     }
 
-    // =========================
-    // LOGIN LOGIC
-    // =========================
+
     
     public Account[] loginUser(String username, String password) {
         int userId = -1;
@@ -51,9 +49,7 @@ public class Bank {
         return false;
     }
 
-    // =========================
-    // FILE LOADING METHODS
-    // =========================
+   
 
     public void loadAccountsFromFile() {
         try (BufferedReader br = new BufferedReader(new FileReader("accounts.txt"))) {
@@ -111,9 +107,7 @@ public class Bank {
         }
     }
 
-    // =========================
-    // PERSISTENT LOAN SYSTEM
-    // =========================
+   
 
     public void applyForLoan(int userId, double amount, String reason) {
         try (FileWriter fw = new FileWriter("loans.txt", true)) {

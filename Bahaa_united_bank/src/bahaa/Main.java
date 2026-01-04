@@ -13,12 +13,13 @@ public class Main {
         bank.loadUsersFromFile();
         bank.loadEmployeesFromFile();
 
-        System.out.println("--- Welcome to the Bank System ---");
+        System.out.println("Welcome to Bahaa United Bank");
+        System.out.println("We are not alone nor the best but we are your only choice");
         System.out.println("1 - User Login");
         System.out.println("2 - Employee Login");
         System.out.print("Choice: ");
         int userType = sc.nextInt();
-        sc.nextLine(); // Clear buffer
+        sc.nextLine();
 
         if (userType == 2) {
          
@@ -49,10 +50,10 @@ public class Main {
 
             boolean exit = false;
             while (!exit) {
-                System.out.println("\n--- User Menu ---");
+                System.out.println("\n User Menu");
                 System.out.println("0 - Savings Account");
                 System.out.println("1 - Checking Account");
-                System.out.println("2 - Logout");
+                System.out.println("2 - Exist");
                 System.out.print("Select account: ");
                 int accChoice = sc.nextInt();
 
@@ -109,7 +110,7 @@ public class Main {
                 }
             }
         }
-        System.out.println("Thank you for using our bank!");
+        System.out.println("Thank you for using our United Bahaa Bank!");
         sc.close();
     }
 }
