@@ -4,11 +4,22 @@ import java.util.Scanner;
 
 public class Main {
 
+    public static void showCuteGreeting() {
+        String[] quotes = {
+            "The best way to save money is not to spend it.' - Bahaa Bank",
+            "A deposit a day keeps the bankruptcy away.",
+            "Your future self will thank you for this deposit.'",
+            "Your money is in safe hands!",
+            "Luck follows those who manage their money well!'"
+        };
+        int index = (int) (Math.random() * quotes.length);
+        System.out.println("\n" + quotes[index]);
+    }
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         Bank bank = new Bank();
 
-      
         bank.loadAccountsFromFile();
         bank.loadUsersFromFile();
         bank.loadEmployeesFromFile();
@@ -22,7 +33,6 @@ public class Main {
         sc.nextLine();
 
         if (userType == 2) {
-         
             System.out.print("Employee Username: ");
             String empUser = sc.nextLine();
             System.out.print("Employee Password: ");
@@ -36,7 +46,6 @@ public class Main {
             }
 
         } else {
-        
             System.out.print("Username: ");
             String u = sc.nextLine();
             System.out.print("Password: ");
@@ -48,17 +57,24 @@ public class Main {
                 return;
             }
 
+            showCuteGreeting();
+
             boolean exit = false;
             while (!exit) {
                 System.out.println("\n User Menu");
                 System.out.println("0 - Savings Account");
                 System.out.println("1 - Checking Account");
-                System.out.println("2 - Exist");
+                System.out.println("2 - Exit");
                 System.out.print("Select account: ");
                 int accChoice = sc.nextInt();
 
                 if (accChoice == 2) {
                     exit = true;
+                    continue;
+                }
+
+                if (accChoice < 0 || accChoice > 1) {
+                    System.out.println("Invalid account selection.");
                     continue;
                 }
 
@@ -71,7 +87,7 @@ public class Main {
                     case 1:
                         System.out.print("Enter amount to deposit: ");
                         double d = sc.nextDouble();
-                        if (current.deposit(d)) System.out.println("Deposit successful");
+                        if (current.deposit(d)) System.out.println("Deposit successful!");
                         break;
                     case 2:
                         System.out.print("Enter amount to withdraw: ");
@@ -91,31 +107,26 @@ public class Main {
                     case 5:
                         System.out.println("Current balance: " + current.checkBalance());
                         break;
-                     
                     case 6:
                         System.out.print("Enter loan amount: ");
                         double lAmt = sc.nextDouble();
-                        sc.nextLine(); // Clear the buffer
-
+                        sc.nextLine(); 
                         System.out.print("Reason for loan: ");
                         String res = sc.nextLine();
-
-                        System.out.print("Enter your Annual Income: "); // New prompt
+                        System.out.print("Enter your Annual Income: ");
                         double income = sc.nextDouble();
-                        sc.nextLine(); // Clear the buffer
-
-                        // Pass the income to the bank's apply method
+                        sc.nextLine(); 
                         bank.applyForLoan(current.getUserId(), lAmt, res, income); 
                         System.out.println("Loan application submitted!");
                         break;
-                          
-                        case 7:
-                            bank.checkLoanStatus(current.getUserId());
-                            break;
-                        case 8:
-                            break;
+                    case 7:
+                        bank.checkLoanStatus(current.getUserId());
+                        break;
+                    case 8: 
+                        break;
                     default:
                         System.out.println("Invalid choice");
+                        break;
                 }
             }
         }

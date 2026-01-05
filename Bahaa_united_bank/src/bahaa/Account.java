@@ -17,32 +17,20 @@ public abstract class Account implements Transferable {
         this.password = password;
     }
 
-    public int getAccountId() {
-        return accountId;
-    }
+ 
+   
 
-    public int getUserId() {
-        return userId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
+    public int getAccountId() { return accountId; }
+    public int getUserId() { return userId; }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; } 
+    public void setPassword(String password) { this.password = password; }
 
     public boolean checkPassword(String pass) {
         if (password == null) return false;
         return password.equals(pass);
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-   
     public double checkBalance() {
         double balance = 0;
         File file = new File("transactions.txt");
@@ -52,7 +40,6 @@ public abstract class Account implements Transferable {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine().trim();
                 if (line.isEmpty()) continue; 
-
                 String[] p = line.split(",");
                 if (p.length < 3) continue; 
 
@@ -68,7 +55,6 @@ public abstract class Account implements Transferable {
                 }
             }
         } catch (Exception e) {
-          
             System.out.println("Error reading transactions: " + e.getMessage());
         }
         return balance;
@@ -79,20 +65,20 @@ public abstract class Account implements Transferable {
             saveTransaction("DEPOSIT", amount);
             return true; 
         } else {
-            System.out.println("Error DONT PUT - BEFORE YOU TYPE THE AMOUNT!.");
+            System.out.println("Error: Amount must be positive.");
             return false; 
         }
     }
+
     public boolean withdraw(double amount) {
         if (checkBalance() >= amount) {
-            saveTransaction("WITHDRAW", amount);
+            saveTransaction("WITHDRAW", amount); 
             return true;
         }
         System.out.println("Insufficient balance");
         return false;
     }
 
-    
     @Override
     public boolean transfer(Account to, double amount) {
         if (checkBalance() >= amount) {
@@ -113,15 +99,29 @@ public abstract class Account implements Transferable {
     }
 
     public void printTransactions() {
-        try (Scanner sc = new Scanner(new File("transactions.txt"))) {
+        System.out.println("Account History:");
+        File file = new File("transactions.txt");
+        if (!file.exists()) {
+            System.out.println("No transactions found");
+            return;
+        }
+
+        try (Scanner sc = new Scanner(file)) {
             while (sc.hasNextLine()) {
-                String[] p = sc.nextLine().split(",");
-                if (Integer.parseInt(p[0]) == accountId) {
-                    System.out.println(p[1] + " : " + p[2]);
+                String line = sc.nextLine().trim();
+                if (line.isEmpty()) continue;
+
+                String[] p = line.split(",");
+                if (p.length >= 3 && Integer.parseInt(p[0]) == this.accountId) {
+                    // This is where the magic happens:
+                    Transaction t = new Transaction(p[1], Double.parseDouble(p[2]));
+                    
+                   
+                    System.out.println(t); 
                 }
             }
         } catch (Exception e) {
-            System.out.println("No transactions");
+            System.out.println("Error loading history.");
         }
     }
 }

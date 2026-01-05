@@ -14,7 +14,7 @@ public class BankTest {
         SavingsAccount sa = new SavingsAccount(1, 1, "user", "pass");
         sa.deposit(5000);
         boolean result = sa.withdraw(2500); 
-        assertFalse("Should be false because 2500 is over the 2000 limit", result);
+        assertFalse( result);
     }
 
     @Test
@@ -24,7 +24,7 @@ public class BankTest {
         ca.deposit(100);
         ca.withdraw(20);
         assertEquals(79.0, ca.checkBalance(), 0.01);
-    }
+    } 
     @Test
     public void testTransferLogic() {
         // Clear old data
@@ -52,7 +52,7 @@ public class BankTest {
         // Try to withdraw 100 (more than balance)
         boolean result = ca.withdraw(100.0);
         
-        assertFalse("Withdrawal should fail due to insufficient funds", result);
+        assertFalse( result);
         assertEquals(50.0, ca.checkBalance(), 0.01); // Balance should remain unchanged
     }
 
@@ -63,7 +63,7 @@ public class BankTest {
 
         SavingsAccount sa = new SavingsAccount(99, 99, "newbie", "pass");
         
-        assertEquals("New account should start with 0 balance", 0.0, sa.checkBalance(), 0.01);
+        assertEquals( 0.0, sa.checkBalance(), 0.01);
     }
     @Test
     public void testLoanApprovalProcess() {
@@ -71,11 +71,24 @@ public class BankTest {
         Loan myLoan = new Loan(101, 5000.0, "Home Improvement", 50000.0);
         
         assertEquals(5000.0, myLoan.getAmount(), 0.01);
-        assertEquals(50000.0, myLoan.getAnnualIncome(), 0.01);
-        assertEquals("Pending", myLoan.getStatus()); // This won't be null anymore!
-        
+        assertEquals(50000.0, myLoan.getAnnualIncome(), 0.01); 
+        assertEquals("Pending", myLoan.getStatus());
         myLoan.setStatus("Approved");
         assertEquals("Approved", myLoan.getStatus());
+    }
+    @Test
+    public void testTransactionToString() {
+        // 1. Create a transaction
+        Transaction t = new Transaction("DEPOSIT", 500.0);
+
+        // 2. Test Getters
+        assertEquals("DEPOSIT", t.getType());
+        assertEquals(500.0, t.getAmount(), 0.01);
+
+        // 3. Test your @Override toString()
+        // This must match your formatting: "Transaction Details: [type | Amount: $amount]"
+        String expectedOutput = "Transaction Details: [DEPOSIT | Amount: $500.00]";
+        assertEquals( expectedOutput, t.toString());
     }
     
 }
