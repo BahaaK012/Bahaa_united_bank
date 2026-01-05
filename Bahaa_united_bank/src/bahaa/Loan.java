@@ -4,25 +4,30 @@ public class Loan {
     private int userId;
     private double amount;
     private String reason;
+    private double annualIncome; // New field added
     private String status; 
 
-    public Loan(int userId, double amount, String reason, String status) {
+    // Updated constructor: status is set to "Pending" automatically
+    public Loan(int userId, double amount, String reason, double annualIncome) {
         this.userId = userId;
         this.amount = amount;
         this.reason = reason;
-        this.status = status;
+        this.annualIncome = annualIncome;
+        this.status = "Pending"; 
     }
 
-    // Getters for the pirvate values
+    // Getters
     public int getUserId() { return userId; }
     public double getAmount() { return amount; }
     public String getReason() { return reason; }
+    public double getAnnualIncome() { return annualIncome; } // New Getter
     public String getStatus() { return status; }
+    
     public void setStatus(String status) { this.status = status; }
 
- 
     @Override
     public String toString() {
-        return userId + "," + amount + "," + reason + "," + status;
+        // Updated to include income in the file string
+        return userId + "," + amount + "," + reason + "," + annualIncome + "," + status;
     }
 }

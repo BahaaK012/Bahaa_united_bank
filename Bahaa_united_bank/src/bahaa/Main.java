@@ -92,14 +92,23 @@ public class Main {
                         System.out.println("Current balance: " + current.checkBalance());
                         break;
                      
-                        case 6:
-                            System.out.print("Enter amount: ");
-                            double lAmt = sc.nextDouble();
-                            sc.nextLine(); 
-                            System.out.print("Reason: ");
-                            String res = sc.nextLine();
-                            bank.applyForLoan(current.getUserId(), lAmt, res);
-                            break;
+                    case 6:
+                        System.out.print("Enter loan amount: ");
+                        double lAmt = sc.nextDouble();
+                        sc.nextLine(); // Clear the buffer
+
+                        System.out.print("Reason for loan: ");
+                        String res = sc.nextLine();
+
+                        System.out.print("Enter your Annual Income: "); // New prompt
+                        double income = sc.nextDouble();
+                        sc.nextLine(); // Clear the buffer
+
+                        // Pass the income to the bank's apply method
+                        bank.applyForLoan(current.getUserId(), lAmt, res, income); 
+                        System.out.println("Loan application submitted!");
+                        break;
+                          
                         case 7:
                             bank.checkLoanStatus(current.getUserId());
                             break;

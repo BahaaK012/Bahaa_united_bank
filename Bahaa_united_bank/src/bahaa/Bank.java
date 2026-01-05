@@ -12,11 +12,11 @@ public class Bank {
     private int numEmployees = 0;
 
     public void addAccount(Account acc) {
-        accounts[numAccounts++] = acc;
+        if (numAccounts < accounts.length) {
+            accounts[numAccounts++] = acc;
+        }
     }
 
-
-    
     public Account[] loginUser(String username, String password) {
         int userId = -1;
         for (int i = 0; i < numAccounts; i++) {
@@ -33,7 +33,7 @@ public class Bank {
         Account[] result = new Account[2];
         int count = 0;
         for (int i = 0; i < numAccounts; i++) {
-            if (accounts[i].getUserId() == userId) {
+            if (accounts[i].getUserId() == userId && count < 2) {
                 result[count++] = accounts[i];
             }
         }
@@ -48,8 +48,6 @@ public class Bank {
         }
         return false;
     }
-
-   
 
     public void loadAccountsFromFile() {
         try (BufferedReader br = new BufferedReader(new FileReader("accounts.txt"))) {
@@ -88,7 +86,7 @@ public class Bank {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Error loading users: " + e.getMessage());
+            System.out.println("Error loading users");
         }
     }
 
@@ -98,119 +96,100 @@ public class Bank {
             numEmployees = 0;
             while ((line = br.readLine()) != null) {
                 String[] p = line.split(",");
-                employees[numEmployees][0] = p[1].trim(); 
-                employees[numEmployees][1] = p[2].trim();
-                numEmployees++;
+                if (numEmployees < employees.length) {
+                    employees[numEmployees][0] = p[1].trim(); 
+                    employees[numEmployees][1] = p[2].trim();
+                    numEmployees++;
+                }
             }
         } catch (Exception e) {
             System.out.println("Error loading employees");
         }
     }
 
-   
-
-    public void applyForLoan(int userId, double amount, String reason) {
+    public void applyForLoan(int userId, double amount, String reason, double income) {
         try (FileWriter fw = new FileWriter("loans.txt", true)) {
-            // userId, amount, reason, status
-            fw.write(userId + "," + amount + "," + reason + ",PENDING\n");
+            fw.write(userId + "," + amount + "," + reason + "," + income + ",PENDING\n");
             System.out.println("Loan request submitted for review.");
         } catch (IOException e) {
             System.out.println("Error saving loan request.");
         }
     }
 
-    /**
-     * NEW: Allows user to see their loan history and current status
-     */
     public void checkLoanStatus(int userId) {
         File file = new File("loans.txt");
         if (!file.exists()) {
             System.out.println("No loan history found.");
             return;
         }
-
         System.out.println("\n--- Your Loan Applications ---");
         boolean found = false;
         try (Scanner fs = new Scanner(file)) {
             while (fs.hasNextLine()) {
                 String line = fs.nextLine();
                 String[] p = line.split(",");
-                if (p.length == 4 && Integer.parseInt(p[0]) == userId) {
-                    System.out.println("Amount: $" + p[1] + " | Reason: " + p[2] + " | Status: " + p[3]);
+                if (p.length == 5 && Integer.parseInt(p[0]) == userId) {
+                    System.out.println("Amount: $" + p[1] + " | Income: $" + p[3] + " | Status: " + p[4]);
                     found = true;
                 }
             }
         } catch (Exception e) {
             System.out.println("Error reading loan status.");
         }
-
-        if (!found) {
-            System.out.println("You have not applied for any loans.");
-        }
+        if (!found) System.out.println("You have not applied for any loans.");
     }
 
     public void manageLoans() {
         List<String> loanData = new ArrayList<>();
         File file = new File("loans.txt");
-        
         if (!file.exists()) {
             System.out.println("No loan requests found.");
             return;
         }
-
         try (Scanner fs = new Scanner(file)) {
-            while (fs.hasNextLine()) {
-                loanData.add(fs.nextLine());
-            }
-        } catch (FileNotFoundException e) { return; }
+            while (fs.hasNextLine()) loanData.add(fs.nextLine());
+        } catch (Exception e) { return; }
 
         List<String> updatedData = new ArrayList<>();
         Scanner sc = new Scanner(System.in);
-
         for (String line : loanData) {
             String[] p = line.split(",");
-            if (p.length == 4 && p[3].equals("PENDING")) {
+            if (p.length == 5 && p[4].equals("PENDING")) {
+                double amt = Double.parseDouble(p[1]);
+                double income = Double.parseDouble(p[3]);
                 System.out.println("\n--- Reviewing Loan Request ---");
-                System.out.println("User ID: " + p[0] + " | Amount: $" + p[1]);
-                System.out.println("Reason: " + p[2]);
+                System.out.println("User ID: " + p[0] + " | Amount: $" + amt + " | Income: $" + income);
+                if (amt > (income * 0.5)) System.out.println("!!! WARNING: High Risk Loan.");
+                
                 System.out.print("Action: (y) Accept, (n) Reject, (s) Skip: ");
                 String action = sc.next();
-
                 if (action.equalsIgnoreCase("y")) {
                     int uid = Integer.parseInt(p[0]);
-                    double amt = Double.parseDouble(p[1]);
-                    
-                    boolean found = false;
+                    boolean deposited = false;
                     for (int i = 0; i < numAccounts; i++) {
                         if (accounts[i].getUserId() == uid && accounts[i] instanceof SavingsAccount) {
                             accounts[i].deposit(amt);
-                            found = true;
+                            deposited = true;
                             break;
                         }
                     }
-                    
-                    if (found) {
-                        updatedData.add(p[0] + "," + p[1] + "," + p[2] + ",ACCEPTED");
-                        System.out.println("Loan approved and funds deposited.");
+                    if (deposited) {
+                        updatedData.add(p[0] + "," + p[1] + "," + p[2] + "," + p[3] + ",ACCEPTED");
+                        System.out.println("Loan approved.");
                     } else {
-                        System.out.println("No Savings Account found. Keeping request PENDING.");
                         updatedData.add(line);
                     }
                 } else if (action.equalsIgnoreCase("n")) {
-                    updatedData.add(p[0] + "," + p[1] + "," + p[2] + ",REJECTED");
-                    System.out.println("Loan rejected.");
+                    updatedData.add(p[0] + "," + p[1] + "," + p[2] + "," + p[3] + ",REJECTED");
                 } else {
-                    updatedData.add(line); 
+                    updatedData.add(line);
                 }
             } else {
-                updatedData.add(line); 
+                updatedData.add(line);
             }
         }
-
         try (PrintWriter pw = new PrintWriter(new FileWriter("loans.txt"))) {
             for (String l : updatedData) pw.println(l);
-        } catch (IOException e) {
-            System.out.println("Error updating loan file.");
-        }
+        } catch (Exception e) { }
     }
 }
