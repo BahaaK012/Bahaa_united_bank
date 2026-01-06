@@ -1,7 +1,12 @@
 package bahaa;
 
 import static org.junit.Assert.*;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.PrintStream;
+import java.util.Scanner;
+
 import org.junit.Test;
 
 /**
@@ -105,5 +110,35 @@ public class BankTest {
 
         String expectedOutput = "Transaction Details: [DEPOSIT | Amount: $500.00]";
         assertEquals(expectedOutput, t.toString());
+    }
+    @Test
+    public void testScaryMessageTrigger() {
+        // Simulate a user typing 'a', 'b', and then 'c'
+        String simulatedInput = "a\nb\nc\n";
+        Scanner testScanner = new Scanner(simulatedInput);
+        
+        // We capture the output to verify the message appears
+        PrintStream originalOut = System.out;
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(bos));
+
+        try {
+            // Manually call the helper 3 times to simulate 3 strikes
+            // We use a private access trick or just call the logic directly if it's public
+            // Assuming we added 'handleFunnyInput' as a helper in Main
+            
+            // Strike 1
+            Main.handleFunnyInput(testScanner);
+            // Strike 2
+            Main.handleFunnyInput(testScanner);
+            // Strike 3 - The scary one
+            Main.handleFunnyInput(testScanner);
+
+            String output = bos.toString();
+            assertTrue("The scary message should appear on the 3rd strike", 
+                output.contains("sleep with your eyes open today"));
+        } finally {
+            System.setOut(originalOut);
+        }
     }
 }
