@@ -3,6 +3,9 @@ package bahaa;
 import java.io.*;
 import java.util.Scanner;
 
+/**
+ * Base class for all types of bank accounts.
+ */
 public abstract class Account implements Transferable {
 
     protected int accountId;
@@ -10,6 +13,13 @@ public abstract class Account implements Transferable {
     protected String username;
     protected String password;
 
+    /**
+     * Sets up a new account with ID and login info.
+     * @param accountId the unique account ID
+     * @param userId the owner's user ID
+     * @param username the login name
+     * @param password the login password
+     */
     public Account(int accountId, int userId, String username, String password) {
         this.accountId = accountId;
         this.userId = userId;
@@ -17,20 +27,31 @@ public abstract class Account implements Transferable {
         this.password = password;
     }
 
- 
-   
-
+    /** @return the account ID */
     public int getAccountId() { return accountId; }
+    /** @return the user ID */
     public int getUserId() { return userId; }
+    /** @return the username */
     public String getUsername() { return username; }
+    /** @param username the new username */
     public void setUsername(String username) { this.username = username; } 
+    /** @param password the new password */
     public void setPassword(String password) { this.password = password; }
 
+    /**
+     * Checks if the entered password matches the account password.
+     * @param pass the password to check
+     * @return true if the password is correct
+     */
     public boolean checkPassword(String pass) {
         if (password == null) return false;
         return password.equals(pass);
     }
 
+    /**
+     * Reads the transactions file to calculate the current balance.
+     * @return the current total balance
+     */
     public double checkBalance() {
         double balance = 0;
         File file = new File("transactions.txt");
@@ -60,6 +81,11 @@ public abstract class Account implements Transferable {
         return balance;
     }
 
+    /**
+     * Adds money to the account and saves it to the file.
+     * @param amount the amount to deposit
+     * @return true if successful
+     */
     public boolean deposit(double amount) {
         if (amount > 0) {
             saveTransaction("DEPOSIT", amount);
@@ -70,6 +96,11 @@ public abstract class Account implements Transferable {
         }
     }
 
+    /**
+     * Takes money out if there is enough balance.
+     * @param amount the amount to withdraw
+     * @return true if successful
+     */
     public boolean withdraw(double amount) {
         if (checkBalance() >= amount) {
             saveTransaction("WITHDRAW", amount); 
@@ -79,6 +110,12 @@ public abstract class Account implements Transferable {
         return false;
     }
 
+    /**
+     * Sends money from this account to another one.
+     * @param to the account receiving the money
+     * @param amount the amount to transfer
+     * @return true if successful
+     */
     @Override
     public boolean transfer(Account to, double amount) {
         if (checkBalance() >= amount) {
@@ -90,6 +127,11 @@ public abstract class Account implements Transferable {
         return false;
     }
 
+    /**
+     * Writes a single transaction line to the text file.
+     * @param type the type of transaction
+     * @param amount the dollar amount
+     */
     protected void saveTransaction(String type, double amount) {
         try (FileWriter fw = new FileWriter("transactions.txt", true)) {
             fw.write(accountId + "," + type + "," + amount + "\n");
@@ -98,6 +140,9 @@ public abstract class Account implements Transferable {
         }
     }
 
+    /**
+     * Finds and prints all transactions belonging to this account.
+     */
     public void printTransactions() {
         System.out.println("Account History:");
         File file = new File("transactions.txt");
@@ -113,10 +158,7 @@ public abstract class Account implements Transferable {
 
                 String[] p = line.split(",");
                 if (p.length >= 3 && Integer.parseInt(p[0]) == this.accountId) {
-                    // This is where the magic happens:
                     Transaction t = new Transaction(p[1], Double.parseDouble(p[2]));
-                    
-                   
                     System.out.println(t); 
                 }
             }

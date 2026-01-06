@@ -3,21 +3,40 @@ package bahaa;
 import java.io.*;
 import java.util.*;
 
+/**
+ * Manages the main operations of the bank, including users, employees, and loans.
+ */
 public class Bank {
-    // Using ArrayList for dynamic resizing and cleaner code
+    
     private List<Account> accounts = new ArrayList<>();
-    // Using a list of String arrays for employees
     private List<String[]> employees = new ArrayList<>();
 
+    /**
+     * Default constructor for the Bank class.
+     */
+    public Bank() {}
+
+    /**
+     * Adds an account to the bank's list.
+     * @param acc the account to be added
+     */
     public void addAccount(Account acc) {
         accounts.add(acc);
     }
 
+    /**
+     * Finds the accounts belonging to a user if the username and password match.
+     * The username check is case-insensitive.
+     * @param username the user's login name
+     * @param password the user's login password
+     * @return an array of two accounts if found, otherwise null
+     */
     public Account[] loginUser(String username, String password) {
         int userId = -1; 
         for (Account acc : accounts) {
+            // Updated to equalsIgnoreCase for case-insensitive usernames
             if (acc.getUsername() != null &&
-                acc.getUsername().equals(username) &&
+                acc.getUsername().equalsIgnoreCase(username) &&
                 acc.checkPassword(password)) {
                 userId = acc.getUserId();
                 break;
@@ -35,15 +54,26 @@ public class Bank {
         return (count == 2) ? result : null;
     }
 
+    /**
+     * Checks if employee credentials are correct.
+     * The username check is case-insensitive.
+     * @param username the employee's username
+     * @param password the employee's password
+     * @return true if credentials match, false otherwise
+     */
     public boolean loginEmployee(String username, String password) {
         for (String[] emp : employees) {
-            if (emp[0].equals(username) && emp[1].equals(password)) {
+            // Updated to equalsIgnoreCase for case-insensitive employee names
+            if (emp[0].equalsIgnoreCase(username) && emp[1].equals(password)) {
                 return true;
             }
         }
         return false;
     }
 
+    /**
+     * Loads account data from the text file.
+     */
     public void loadAccountsFromFile() {
         try (BufferedReader br = new BufferedReader(new FileReader("accounts.txt"))) {
             String line;
@@ -62,6 +92,9 @@ public class Bank {
         } catch (Exception e) { System.out.println("Error loading accounts"); }
     }
 
+    /**
+     * Links usernames and passwords from the file to the loaded accounts.
+     */
     public void loadUsersFromFile() {
         try (BufferedReader br = new BufferedReader(new FileReader("users.txt"))) {
             String line;
@@ -81,10 +114,13 @@ public class Bank {
         } catch (Exception e) { System.out.println("Error loading users"); }
     }
 
+    /**
+     * Loads employee login info from the file.
+     */
     public void loadEmployeesFromFile() {
         try (BufferedReader br = new BufferedReader(new FileReader("employees.txt"))) {
             String line;
-            employees.clear(); // Refresh list on load
+            employees.clear(); 
             while ((line = br.readLine()) != null) {
                 String[] p = line.split(",");
                 if (p.length >= 3) {
@@ -94,6 +130,13 @@ public class Bank {
         } catch (Exception e) { System.out.println("Error loading employees"); }
     }
 
+    /**
+     * Saves a new loan application to the loans file.
+     * @param userId the ID of the applying user
+     * @param amount the requested loan amount
+     * @param reason the purpose of the loan
+     * @param income the user's yearly income
+     */
     public void applyForLoan(int userId, double amount, String reason, double income) {
         try (FileWriter fw = new FileWriter("loans.txt", true)) {
             fw.write(userId + "," + amount + "," + reason + "," + income + ",PENDING\n");
@@ -101,6 +144,10 @@ public class Bank {
         } catch (IOException e) { System.out.println("Error saving loan."); }
     }
 
+    /**
+     * Searches the loan file to show a user their application status.
+     * @param userId the ID of the user to check
+     */
     public void checkLoanStatus(int userId) {
         File file = new File("loans.txt");
         if (!file.exists()) { System.out.println("No history."); return; }
@@ -114,6 +161,9 @@ public class Bank {
         } catch (Exception e) { System.out.println("Error checking status."); }
     }
 
+    /**
+     * Allows an employee to accept or reject pending loans.
+     */
     public void manageLoans() {
         List<String> loanData = new ArrayList<>();
         File file = new File("loans.txt");
